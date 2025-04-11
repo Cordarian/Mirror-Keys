@@ -2,7 +2,7 @@
 Mirror Keys emulates a half-QWERTY keyboard, allowing users to reach every key on their keyboard with a single hand.
 
 ## Description
-Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with a single hand, so users can type while keeping one hand on their mouse, or acting as an assistive technology program for users who want to avoid using one of their hands while typing. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) send Control+c to copy selected text.
+Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with a single hand, so users can type while keeping one hand on their mouse, or acting as an assistive technology program for users who want to avoid using one of their hands while typing. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) sends Control+c to copy selected text.
 
 Your keyboard still works like a normal QWERTY keyboard when you aren’t holding the spacebar.
 
