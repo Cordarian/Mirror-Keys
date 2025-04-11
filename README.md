@@ -1,2 +1,98 @@
 # Mirror-Keys
 Mirror Keys emulates a half-QWERTY keyboard, allowing users to reach every key on their keyboard with a single hand.
+
+## Description
+Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with a single hand, so users can type while keeping one hand on their mouse, or acting as an assistive technology program for users who want to avoid using one of their hands while typing. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) send Control+c to copy selected text.
+
+Your keyboard still works like a normal QWERTY keyboard when you aren’t holding the spacebar.
+
+**NOTE:** When typing very quickly, a key might accidentally be mirrored if there isn’t enough of a delay between releasing the spacebar and pressing the next key. The window for this is very brief, but Mirror Keys can be paused from the menu bar or tray icon to not interfere with normal keyboard operations.
+
+## Mirror Map
+![A QWERTY keyboard with additional symbols on each key to indicate what key is sent when that key is pressed while holding the spacebar.](https://github.com/user-attachments/assets/a3a59e48-f4ca-4725-a450-63f680c01c2f)
+
+To help new users learn the mirrored keyboard layout, Mirror Keys also includes a keyboard map that launches as its own resizable window. The key map launches automatically with the program, and can be pinned to stay on top of all other program windows; both of these settings can be turned off through the menu bar as you get more accustomed to using the mirrored keyboard.
+
+**Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key *when the spacebar is not pressed* and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
+
+## How does it work?
+
+This stand-alone tool is written in AutoHotkey v2. You can find the original code here. [[Link to repository]]
+
+## Full Key Listing
+| To send this key… | …press this key while holding the spacebar |
+| --- | --- |
+| a | ; |
+| b | n |
+| c | , |
+| d | k |
+| e | i |
+| f | j |
+| g | h |
+| h | g |
+| i | e |
+| j | f |
+| k | d |
+| l | s |
+| m | v |
+| n | b |
+| o | w |
+| p | q |
+| q | p |
+| r | u |
+| s | l |
+| t | y |
+| u | r |
+| v | m |
+| w | o |
+| x | . |
+| y | t |
+| z | / |
+| 0 | 1 |
+| 1 | 0 |
+| 2 | 9 |
+| 3 | 8 |
+| 4 | 7 |
+| 5 | 6 |
+| 6 | 5 |
+| 7 | 4 |
+| 8 | 3 |
+| 9 | 2 |
+| Backspace | Tab |
+| Tab | [ \ or ] |
+| ` | - or = |
+| ~ | _ (Shift+-) |
+| ! | ) (Shift+0) |
+| @ | ( (Shift+9) |
+| # | * (Shift+8) |
+| $ | & (Shift+7) |
+| % | ^ (Shift+6) |
+| ^ | % (Shift+5) |
+| & | $ (Shift+4) |
+| * | # (Shift+3) |
+| ( | @ (Shift+2) |
+| ) | ! (Shift+1) |
+| - | ` |
+| _ | ~ (Shift+`) |
+| : | Shift+a |
+| ; | a |
+| ' | CapsLock |
+| " | Shift+CapsLock |
+| , | c |
+| < | Shift+c |
+| . | x |
+| > | Shift+x |
+| ? | Shift+z |
+| / | z |
+| F1 | F12 |
+| F2 | F11 |
+| F3 | F10 |
+| F4 | F9 |
+| F5 | F8 |
+| F6 | F7 |
+| F7 | F6 |
+| F8 | F5 |
+| F9 | F4 |
+| F10 | F3 |
+| F11 | F2 |
+| F12 | F1 |
