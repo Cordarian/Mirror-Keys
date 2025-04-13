@@ -2,7 +2,7 @@
 Mirror Keys emulates a half-QWERTY keyboard, allowing users to reach every key on their keyboard with a single hand.
 
 ## Description
-Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with a single hand, so users can type while keeping one hand on their mouse, or acting as an assistive technology program for users who want to avoid using one of their hands while typing. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) sends Control+c to copy selected text.
+Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with one hand, so users can type while keeping the other hand on their mouse, or acting as an assistive technology program for users who want to avoid typing with one of their hands. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) sends Control+c to copy selected text.
 
 Your keyboard still works like a normal QWERTY keyboard when you aren’t holding the spacebar.
 
@@ -13,11 +13,11 @@ Your keyboard still works like a normal QWERTY keyboard when you aren’t holdin
 
 To help new users learn the mirrored keyboard layout, Mirror Keys also includes a keyboard map that launches as its own resizable window. The key map launches automatically with the program, and can be pinned to stay on top of all other program windows; both of these settings can be turned off through the menu bar as you get more accustomed to using the mirrored keyboard.
 
-**Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key *when the spacebar is not pressed* and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
+**Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key **when the spacebar is not pressed** and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
 
 ## How does it work?
 
-This stand-alone tool is written in AutoHotkey v2. You can find the original code here. [[Link to repository]]
+This stand-alone tool is written in AutoHotkey v2. You can download and run the .exe file by itself, or view the whole code in the .ahk file, which can be run without the .exe using [AutoHotkey](https://www.autohotkey.com/).
 
 ## Full Key Listing
 | To send this key… | …press this key while holding the spacebar |
