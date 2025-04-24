@@ -13,13 +13,13 @@ Your keyboard still works like a normal QWERTY keyboard when you aren’t holdin
 
 To help new users learn the mirrored keyboard layout, Mirror Keys also includes a keyboard map that launches as its own resizable window. The key map launches automatically with the program, and can be pinned to stay on top of all other program windows; both of these settings can be turned off through the menu bar as you get more accustomed to using the mirrored keyboard.
 
-**Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key **when the spacebar is not pressed** and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
-
 ## How does it work?
 
 This stand-alone tool is written in AutoHotkey v2. You can download and run the .exe file by itself, or view the whole code in the .ahk file, which can be run without the .exe using [AutoHotkey](https://www.autohotkey.com/).
 
 ## Full Key Listing
+**Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key **when the spacebar is not pressed** and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
+
 | To send this key… | …press this key while holding the spacebar |
 | --- | --- |
 | a | ; |
@@ -48,6 +48,8 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | x | . |
 | y | t |
 | z | / |
+| Backspace | Tab |
+| Tab | [ or ] or \ |
 | 1 | 0 |
 | 2 | 9 |
 | 3 | 8 |
@@ -58,8 +60,6 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | 8 | 3 |
 | 9 | 2 |
 | 0 | 1 |
-| Backspace | Tab |
-| Tab | [ or ] or \ |
 | ` | - or = |
 | ~ | + (Shift+=) |
 | ! | ) (Shift+0) |
