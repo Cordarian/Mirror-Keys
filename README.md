@@ -48,7 +48,6 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | x | . |
 | y | t |
 | z | / |
-| 0 | 1 |
 | 1 | 0 |
 | 2 | 9 |
 | 3 | 8 |
@@ -58,10 +57,11 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | 7 | 4 |
 | 8 | 3 |
 | 9 | 2 |
+| 0 | 1 |
 | Backspace | Tab |
-| Tab | [ \ or ] |
+| Tab | [ ] or \ |
 | ` | - or = |
-| ~ | _ (Shift+-) |
+| ~ | + (Shift+=) |
 | ! | ) (Shift+0) |
 | @ | ( (Shift+9) |
 | # | * (Shift+8) |
@@ -74,16 +74,16 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | ) | ! (Shift+1) |
 | - | ` |
 | _ | ~ (Shift+`) |
-| : | Shift+a |
 | ; | a |
+| : | Shift+a |
 | ' | CapsLock |
 | " | Shift+CapsLock |
 | , | c |
 | < | Shift+c |
 | . | x |
 | > | Shift+x |
-| ? | Shift+z |
 | / | z |
+| ? | Shift+z |
 | F1 | F12 |
 | F2 | F11 |
 | F3 | F10 |
