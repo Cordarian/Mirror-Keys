@@ -1,5 +1,5 @@
 ; =========================================================
-; 						DIRECTIVES
+; 			DIRECTIVES
 ; =========================================================
 #Requires Autohotkey v2.0+
 #SingleInstance Force ; Prevents multiple versions of script running
@@ -7,7 +7,7 @@
 
 
 ; =========================================================
-; 						MIRROR KEYS
+; 			MIRROR KEYS
 ; =========================================================
 MirrorSend(this_key) {
 	; Checks for modifier keys, then sends this_key with modifiers
@@ -122,7 +122,7 @@ Space & b:: MirrorSend("n")
 
 
 ; =========================================================
-; 						KEYBOARD GUI
+; 			KEYBOARD GUI
 ; =========================================================
 Keyboard_Display(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
 	Global
@@ -191,7 +191,7 @@ KeyboardWindow_Close(thisGui) {
 
 
 ; =========================================================
-; 							MENUS
+; 			MENUS
 ; =========================================================
 ; Tray Menu/GUI File Menu =================================
 
@@ -286,7 +286,7 @@ toggle_map_startup(this_MenuItem, this_ItemPos, this_Menu) {
 
 
 ; ==========================================================
-; STREAM SAVE SETTINGS
+; 		STREAM SAVE SETTINGS
 ; ==========================================================
 ; This will fail if the file isn't in an NTFS folder, E.G., if it's in Box Drive, which is FAT-32, and create a settings text file using stream_fallback instead
 Global stream_fallback := "MirrorKeys-Settings-" A_Username ".ini"
@@ -315,7 +315,7 @@ StreamWrite(INI_section, INI_key, INI_value) {
 
 
 ; =========================================================
-; 						IMAGE FILES
+; 			IMAGE FILES
 ; =========================================================
 {
 	Create_Image(B64, NewHandle := True) {
@@ -427,7 +427,7 @@ StreamWrite(INI_section, INI_key, INI_value) {
 
 
 ; =========================================================
-; 						LAUNCH GUI
+; 			LAUNCH GUI
 ; =========================================================
 
 autostart_map_state := StreamRead("MirrorKeys", "autostart_map_state", True) ; Reads current setting
