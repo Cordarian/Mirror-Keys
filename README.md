@@ -2,9 +2,9 @@
 Mirror Keys emulates a [half-QWERTY keyboard](https://en.wikipedia.org/wiki/Half-keyboard), allowing users to reach every key on their keyboard with a single hand.
 
 ## Description
-Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with one hand, acting as a productivity tool so users can type while keeping their other hand on the mouse, or acting as an assistive technology program for users who can only type with one hand. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) sends Control+c to copy selected text.
+Mirror Keys allows for one-handed typing on a normal QWERTY keyboard. By holding the spacebar and typing a key, it types the opposite key on the keyboard, e.g., Space+F types the letter J and vice versa. This lets users reach every key on the keyboard with one hand, acting as a productivity tool so users can type while keeping their other hand on the mouse, or acting as an assistive technology program for users who can only type with one hand. Key combinations also work with the mirrored keys, e.g., Shift+Space+1 types an exclamation mark (!), and Control+Space+Comma (,) sends Control+C to copy selected text.
 
-Your keyboard still works like a normal QWERTY keyboard when you aren’t holding the spacebar.
+Your keyboard still works like a normal QWERTY keyboard when you aren’t holding the spacebar. The spacebar will only type a Space character when it's pressed and release alone, without mirroring another key, to prevent Spaces being added unnecessarily.
 
 **NOTE:** When typing very quickly, a key might accidentally be mirrored if there isn’t enough of a delay between releasing the spacebar and pressing the next key. The window for this is very brief, but Mirror Keys can be paused from the menu bar or tray icon to not interfere with normal keyboard operations.
 
