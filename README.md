@@ -59,7 +59,7 @@ This stand-alone tool is written in AutoHotkey v2. You can download and run the 
 | 9 | 2 |
 | 0 | 1 |
 | Backspace | Tab |
-| Tab | [ ] or \ |
+| Tab | [ or ] or \ |
 | ` | - or = |
 | ~ | + (Shift+=) |
 | ! | ) (Shift+0) |
