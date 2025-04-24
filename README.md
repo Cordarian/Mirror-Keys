@@ -13,6 +13,9 @@ Your keyboard still works like a normal QWERTY keyboard when you aren’t holdin
 
 To help new users learn the mirrored keyboard layout, Mirror Keys also includes a keyboard map that launches as its own resizable window. The key map launches automatically with the program, and can be pinned to stay on top of all other program windows; both of these settings can be turned off through the menu bar as you get more accustomed to using the mirrored keyboard.
 
+## Warning for screen reader users
+Mirror Keys may interfere with your screen reader if your JAWS/NVDA key is set to Caps Lock, since Mirror Keys changes Caps Lock to work like the Enter/Return key. Make sure your screen reader key is set to Insert or another key before trying to run Mirror Keys.
+
 ## How does it work?
 
 This stand-alone tool is written in AutoHotkey v2. You can download and run the .exe file by itself, or view the whole code in the .ahk file, which can be run without the .exe using [AutoHotkey](https://www.autohotkey.com/).
