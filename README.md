@@ -9,7 +9,7 @@ Your keyboard still works like a normal QWERTY keyboard when you aren’t holdin
 **NOTE:** When typing very quickly, a key might accidentally be mirrored if there isn’t enough of a delay between releasing the spacebar and pressing the next key. The window for this is very brief, but Mirror Keys can be paused from the menu bar or tray icon to not interfere with normal keyboard operations.
 
 ## Mirror Map
-![A QWERTY keyboard with additional symbols on each key to indicate what key is sent when that key is pressed while holding the spacebar.](https://github.com/user-attachments/assets/a3a59e48-f4ca-4725-a450-63f680c01c2f)
+![Mirror Keys' mirror map window, showing a QWERTY keyboard with additional symbols to indicate what key will be sent when that key is pressed while holding the spacebar.](https://github.com/user-attachments/assets/a3a59e48-f4ca-4725-a450-63f680c01c2f)
 
 To help new users learn the mirrored keyboard layout, Mirror Keys also includes a keyboard map that launches as its own resizable window. The key map launches automatically with the program, and can be pinned to stay on top of all other program windows; both of these settings can be turned off through the menu bar as you get more accustomed to using the mirrored keyboard.
 
