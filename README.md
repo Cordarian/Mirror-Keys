@@ -38,6 +38,9 @@ Mirror Keys may interfere with your screen reader if your JAWS/NVDA key is set t
 ## How does it work?
 This stand-alone tool is written in AutoHotkey v2. You can download and run the .exe file by itself, or view the whole code in the .ahk file, which can be run without the .exe using [AutoHotkey](https://www.autohotkey.com/).
 
+## Run at Startup
+To run Mirror Keys automatically when your computer starts, place the .exe or .ahk file into the File Explorer folder located at `%appdata%\Microsoft\Windows\Start Menu\Programs\Startup`
+
 ## Full Key Listing
 **Caps Lock Note:** With Mirror Keys running, the Caps Lock key acts like the Enter/Return key **when the spacebar is not pressed** and as the apostrophe/quotation mark key (’/”) when the spacebar is pressed.
 
