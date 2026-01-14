@@ -1,135 +1,510 @@
 ; =========================================================
-; 			DIRECTIVES
+; 						DIRECTIVES
 ; =========================================================
 #Requires Autohotkey v2.0+
 #SingleInstance Force ; Prevents multiple versions of script running
 #UseHook ; Helps ensure modifier keys don't remain pressed after hotkey ends
 
-
 ; =========================================================
-; 			MIRROR KEYS
+; 						TO-DOS
 ; =========================================================
-MirrorSend(this_key) {
-	; Checks for modifier keys, then sends this_key with modifiers
-	If GetKeyState("Shift", "P") {
-		this_key := "+" . this_key
-	}
-	If GetKeyState("Ctrl", "P") {
-		this_key := "^" . this_key
-	}
-	If GetKeyState("Alt", "P") {
-		this_key := "!" . this_key
-	}
-	If GetKeyState("LWin", "P") {
-		this_key := "#" . this_key
-	}
-	If GetKeyState("RWin", "P") {
-		this_key := "#" . this_key
-	}
-	Send(this_key)
-}
+/*
+BUG: Mirror Map isn't retaining dimensions quite correctly
 
+*/
+; =========================================================
+; 						VARIABLES
+; =========================================================
+; Modes: "Hold Space to &mirror key", "&Tap Space to toggle mirroring", "Tap Space to mirror &next key", "&Double-tap key to mirror", "&Hold key to mirror"
+Global stream_fallback := "Settings-" A_Username ".ini"
+mode := StreamRead("MirrorKeys", "mode", "Hold Space to &mirror key")
+mirroring := -1
+double_tap_timeout := StreamRead("MirrorKeys", "double_tap_timeout", 400)
+hold_duration := StreamRead("MirrorKeys", "hold_duration", 500)
 
-Space Up:: Send("{Space}")
-
-
+mirror_map := Map()
 ; Left half ===============================================
 ; Function row --------------------------------------------
-Space & F1:: MirrorSend("{F12}")
-Space & F2:: MirrorSend("{F11}")
-Space & F3:: MirrorSend("{F10}")
-Space & F4:: MirrorSend("{F9}")
-Space & F5:: MirrorSend("{F8}")
-Space & F6:: MirrorSend("{F7}")
-
+Mirror_map["F1"] := "F12"
+mirror_map["F2"] := "F11"
+mirror_map["F3"] := "F10"
+mirror_map["F4"] := "F9"
+mirror_map["F5"] := "F8"
+mirror_map["F6"] := "F7"
 ; Number row ----------------------------------------------
-Space & `:: MirrorSend("-")
-Space & 1:: MirrorSend("0")
-Space & 2:: MirrorSend("9")
-Space & 3:: MirrorSend("8")
-Space & 4:: MirrorSend("7")
-Space & 5:: MirrorSend("6")
-
+mirror_map["``"] := "-"
+mirror_map["1"] := "0"
+mirror_map["2"] := "9"
+mirror_map["3"] := "8"
+mirror_map["4"] := "7"
+mirror_map["5"] := "6"
 ; Top row -------------------------------------------------
-Space & Tab:: MirrorSend("{Backspace}")
-Space & q:: MirrorSend("p")
-Space & w:: MirrorSend("o")
-Space & e:: MirrorSend("i")
-Space & r:: MirrorSend("u")
-Space & t:: MirrorSend("y")
-
-Capslock:: {
-	SetCapsLockState "Off"
-	Send("{Enter}")
-}
-
+mirror_map["Tab"] := "Backspace"
+mirror_map["q"] := "p"
+mirror_map["w"] := "o"
+mirror_map["e"] := "i"
+mirror_map["r"] := "u"
+mirror_map["t"] := "y"
 ; Middle row ----------------------------------------------
-Space & Capslock:: MirrorSend("'")
-Space & a:: MirrorSend(";")
-Space & s:: MirrorSend("l")
-Space & d:: MirrorSend("k")
-Space & f:: MirrorSend("j")
-Space & g:: MirrorSend("h")
-
+mirror_map["Tab"] := "Backspace"
+mirror_map["a"] := ";"
+mirror_map["s"] := "l"
+mirror_map["d"] := "k"
+mirror_map["f"] := "j"
+mirror_map["g"] := "h"
 ; Bottom row ----------------------------------------------
-Space & z:: MirrorSend("/")
-Space & x:: MirrorSend(".")
-Space & c:: MirrorSend(",")
-Space & v:: MirrorSend("m")
-
+mirror_map["z"] := "/"
+mirror_map["x"] := "."
+mirror_map["c"] := ","
+mirror_map["v"] := "m"
 ; Right half ==============================================
 ; Function row --------------------------------------------
-Space & F7:: MirrorSend("{F6}")
-Space & F8:: MirrorSend("{F5}")
-Space & F9:: MirrorSend("{F4}")
-Space & F10:: MirrorSend("{F3}")
-Space & F11:: MirrorSend("{F2}")
-Space & F12:: MirrorSend("{F1}")
-
+mirror_map["F7"] := "F6"
+mirror_map["F8"] := "F5"
+mirror_map["F9"] := "F4"
+mirror_map["F10"] := "F3"
+mirror_map["F11"] := "F2"
+mirror_map["F12"] := "F1"
 ; Number row ----------------------------------------------
-Space & =:: MirrorSend("``")
-Space & -:: MirrorSend("``")
-Space & 0:: MirrorSend("1")
-Space & 9:: MirrorSend("2")
-Space & 8:: MirrorSend("3")
-Space & 7:: MirrorSend("4")
-Space & 6:: MirrorSend("5")
-
+mirror_map["="] := "``"
+mirror_map["-"] := "``"
+mirror_map["0"] := "1"
+mirror_map["9"] := "2"
+mirror_map["8"] := "3"
+mirror_map["7"] := "4"
+mirror_map["6"] := "5"
 ; Top row -------------------------------------------------
-Space & \:: MirrorSend("{Tab}")
-Space & ]:: MirrorSend("{Tab}")
-Space & [:: MirrorSend("{Tab}")
-Space & p:: MirrorSend("q")
-Space & o:: MirrorSend("w")
-Space & i:: MirrorSend("e")
-Space & u:: MirrorSend("r")
-Space & y:: MirrorSend("t")
+mirror_map["\"] := "Tab"
+mirror_map["]"] := "Tab"
+mirror_map["["] := "Tab"
+mirror_map["p"] := "q"
+mirror_map["o"] := "w"
+mirror_map["i"] := "e"
+mirror_map["u"] := "r"
+mirror_map["y"] := "t"
 
 ; Middle row ----------------------------------------------
-Space & `;:: MirrorSend("a")
-Space & l:: MirrorSend("s")
-Space & k:: MirrorSend("d")
-Space & j:: MirrorSend("f")
-Space & h:: MirrorSend("g")
-
+mirror_map["Capslock"] := "'"
+mirror_map[";"] := "a"
+mirror_map["l"] := "s"
+mirror_map["k"] := "d"
+mirror_map["j"] := "f"
+mirror_map["h"] := "g"
 ; Bottom row ----------------------------------------------
-Space & /:: MirrorSend("z")
-Space & .:: MirrorSend("x")
-Space & ,:: MirrorSend("c")
-Space & m:: MirrorSend("v")
-Space & n:: MirrorSend("b")
-Space & b:: MirrorSend("n")
+mirror_map["/"] := "z"
+mirror_map["."] := "x"
+mirror_map[","] := "c"
+mirror_map["m"] := "v"
+mirror_map["n"] := "b"
+mirror_map["b"] := "n"
+
+; =========================================================
+; 						FUNCTIONS
+; =========================================================
+MirrorSend(this_key) {
+	; Gets the mirrored key, checks for modifier keys, then sends this_key_mirrored with modifiers
+	this_key_mirrored := mirror_map[this_key]
+	this_key_mirrored_modified := modify_key(this_key_mirrored)
+	Send(this_key_mirrored_modified)
+}
+
+modify_key(a_this_key) {
+	; Adds modifier keys to characters to Send, allowing capitalization and keyboard shortcuts
+	this_key_modified := "{" a_this_key "}"
+	If GetKeyState("Shift", "P") {
+		this_key_modified := "+" . this_key_modified
+	}
+	If GetKeyState("Ctrl", "P") {
+		this_key_modified := "^" . this_key_modified
+	}
+	If GetKeyState("Alt", "P") {
+		this_key_modified := "!" . this_key_modified
+	}
+	If GetKeyState("LWin", "P") {
+		this_key_modified := "#" . this_key_modified
+	}
+	If GetKeyState("RWin", "P") {
+		this_key_modified := "#" . this_key_modified
+	}
+	Return this_key_modified
+}
+
+toggle_mirroring(force := "") {
+	Global mirroring
+	Switch force {
+		Case "On":
+			mirroring := 1
+		Case "Off":
+			mirroring := -1
+		Default:
+			mirroring := -mirroring ; Toggle state
+	}
+
+	SetTimer MirrorTooltip, double_tap_timeout
+	MirrorTooltip() {
+		If mirroring > 0 {
+			ToolTip("Mirroring...")
+		}
+		Else ToolTip()
+	}
+}
+
+; Doesn't work on FAT32 files, IE, Box
+StreamRead(INI_section, INI_key, defaultTo := False) {
+	; Reads the key's value from the given section of the data stream
+	stream_value := IniRead(A_ScriptFullPath ":Stream:$DATA", INI_section, INI_key, defaultTo)
+	If stream_value = defaultTo { ;PUBLICCOPY: Remove this If
+		Global stream_fallback
+		stream_value := IniRead(stream_fallback, INI_section, INI_key, defaultTo)
+	}
+	Return stream_value
+}
+
+StreamWrite(INI_section, INI_key, INI_value) {
+	; Writes the value to the key
+	; This will fail if the file isn't in an NTFS folder, E.G., if it's in Box Drive, which is FAT-32
+	Try {
+		IniWrite(INI_value, A_ScriptFullPath ":Stream:$DATA", INI_section, INI_key)
+	}
+	Catch { ;PUBLICCOPY: Remove this Catch
+		Global stream_fallback
+		IniWrite(INI_value, stream_fallback, INI_section, INI_key)
+	}
+}
 
 
 ; =========================================================
-; 			KEYBOARD GUI
+; 						HOTKEYS
 ; =========================================================
-Keyboard_Display(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
+CapsLock::{
+	Send("{Enter}")
+	SetCapsLockState "AlwaysOff" ; Prevents CapsLock getting stuck on
+}
+
+; SPACE TO MODIFY =========================================
+#HotIf (mode = "Hold Space to &mirror key")
+
+Space & a::
+Space & b::
+Space & c::
+Space & Capslock::
+Space & d::
+Space & e::
+Space & f::
+Space & F1::
+Space & F2::
+Space & F3::
+Space & F4::
+Space & F5::
+Space & F6::
+Space & F7::
+Space & F8::
+Space & F9::
+Space & F10::
+Space & F11::
+Space & F12::
+Space & g::
+Space & h::
+Space & i::
+Space & j::
+Space & k::
+Space & l::
+Space & m::
+Space & n::
+Space & o::
+Space & p::
+Space & q::
+Space & r::
+Space & s::
+Space & t::
+Space & Tab::
+Space & u::
+Space & v::
+Space & w::
+Space & x::
+Space & y::
+Space & z::
+Space & 0::
+Space & 1::
+Space & 2::
+Space & 3::
+Space & 4::
+Space & 5::
+Space & 6::
+Space & 7::
+Space & 8::
+Space & 9::
+Space & ,::
+Space & .::
+Space & /::
+Space & -::
+Space & [::
+Space & \::
+Space & ]::
+Space & `::
+Space & `;::
+Space & =::
+{
+	this_key := SubStr(A_ThisHotkey, 9)
+	MirrorSend(this_key)
+}
+
+Space Up::Send("{Space}") ; NOTE: This circumvents double-tap period :/
+
+
+; SPACE TO TOGGLE =========================================
+
+#HotIf (mode = "&Tap Space to toggle mirroring") OR (mode = "Tap Space to mirror &next key")
+
+Space::{
+	Static tap_count := 0
+
+	If tap_count > 0 {
+		tap_count += 1
+		Return
+	}
+
+	tap_count += 1
+	SetTimer toggle_space, -double_tap_timeout ; Wait for more presses within the timeout period
+	toggle_space() {
+		If tap_count > 1 ; The key was pressed more than once.
+		{
+			Send("{Space}")
+			toggle_mirroring("Off")
+		}
+		; Regardless of which action above was triggered, reset the count for the next series of presses
+		tap_count := 0
+	}
+	toggle_mirroring()
+}
+
+#HotIf mirroring > 0
+*a::
+*b::
+*c::
+*Capslock::
+*d::
+*e::
+*f::
+*F1::
+*F2::
+*F3::
+*F4::
+*F5::
+*F6::
+*F7::
+*F8::
+*F9::
+*F10::
+*F11::
+*F12::
+*g::
+*h::
+*i::
+*j::
+*k::
+*l::
+*m::
+*n::
+*o::
+*p::
+*q::
+*r::
+*s::
+*t::
+*Tab::
+*u::
+*v::
+*w::
+*x::
+*y::
+*z::
+*0::
+*1::
+*2::
+*3::
+*4::
+*5::
+*6::
+*7::
+*8::
+*9::
+*,::
+*.::
+*/::
+*-::
+*[::
+*\::
+*]::
+*`::
+*`;::
+*=::
+{
+	MirrorSend(SubStr(A_ThisHotkey, 2))
+	If mode = "Tap Space to mirror &next key" {
+		toggle_mirroring("Off")
+	}
+}
+
+; DOUBLE TAP KEY ==========================================
+#HotIf mode = "&Double-tap key to mirror"
+*a::
+*b::
+*c::
+*Capslock::
+*d::
+*e::
+*f::
+*F1::
+*F2::
+*F3::
+*F4::
+*F5::
+*F6::
+*F7::
+*F8::
+*F9::
+*F10::
+*F11::
+*F12::
+*g::
+*h::
+*i::
+*j::
+*k::
+*l::
+*m::
+*n::
+*o::
+*p::
+*q::
+*r::
+*s::
+*t::
+*Tab::
+*u::
+*v::
+*w::
+*x::
+*y::
+*z::
+*0::
+*1::
+*2::
+*3::
+*4::
+*5::
+*6::
+*7::
+*8::
+*9::
+*,::
+*.::
+*/::
+*-::
+*[::
+*\::
+*]::
+*`::
+*`;::
+*=::
+{
+	; NOTE: May misbehave for key combos, since the unmirrored key sends and is backspaced
+	this_key := SubStr(A_ThisHotkey, 2)
+
+	If (A_PriorHotkey = A_ThisHotkey) AND (A_TimeSincePriorHotkey < double_tap_timeout) {
+		Send("{Backspace}") ; Deletes the character from the first keypress
+		MirrorSend(this_key)
+	}
+	Else Send(this_key)
+}
+
+; HOLD KEY ================================================
+#HotIf mode = "&Hold key to mirror"
+
+*a::
+*b::
+*c::
+*Capslock::
+*d::
+*e::
+*f::
+*F1::
+*F2::
+*F3::
+*F4::
+*F5::
+*F6::
+*F7::
+*F8::
+*F9::
+*F10::
+*F11::
+*F12::
+*g::
+*h::
+*i::
+*j::
+*k::
+*l::
+*m::
+*n::
+*o::
+*p::
+*q::
+*r::
+*s::
+*t::
+*Tab::
+*u::
+*v::
+*w::
+*x::
+*y::
+*z::
+*0::
+*1::
+*2::
+*3::
+*4::
+*5::
+*6::
+*7::
+*8::
+*9::
+*,::
+*.::
+*/::
+*-::
+*[::
+*\::
+*]::
+*`::
+*`;::
+*=::
+{
+	; BUG: Rapid typing may invert key order, e.g., type asdf, you'll get fdsa
+	; TODO: Some way to show a "Mirroring" tooltip when the key has been pressed long enough?
+	this_key := SubStr(A_ThisHotkey, 2)
+
+	startTime := A_TickCount ; record the time the key was pressed
+	KeyWait(this_key, "U") ; wait for the key to be released
+	keypressDuration := A_TickCount - startTime ; calculate the duration the key was pressed down
+	If (keypressDuration > hold_duration) {
+		MirrorSend(this_key)
+	}
+	Else Send(modify_key(this_key))
+}
+
+
+; =========================================================
+; 						KEYBOARD GUI
+; =========================================================
+Keyboard_Display(ItemName := "", ItemPos := "", ThisMenu := "") {
 	Global
 	If WinExist("Mirror Map - Mirror Keys") {
 		KeyboardWindow_Close(KeyboardWindow)
 	}
-
 
 	; Settings --------------------------------------------
 	map_x := StreamRead("MirrorKeys", "KeyboardWindow_x", 0)
@@ -137,29 +512,28 @@ Keyboard_Display(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := ""
 	map_width := StreamRead("MirrorKeys", "KeyboardWindow_width", 1790)
 	map_height := StreamRead("MirrorKeys", "KeyboardWindow_height", 780)
 
-
 	; Create GUI ------------------------------------------
 	KeyboardWindow := Gui("+Resize", "Mirror Map - Mirror Keys")
 	Build_Menubar()
 
-	Map_alt_text := KeyboardWindow.Add("Text", "", "Alt text: A QWERTY keyboard with additional symbols on each key to indicate what is sent when that key is pressed while holding the spacebar. The full list of keys is available on the Mirror Keys GitHub page.")
-	Keyboard_map := KeyboardWindow.Add("Pic", Format("x0 y0 w{} h{}", map_width, map_height), "HBITMAP:*" . Create_Image(KeyMap_B64))
-
+	Map_alt_text := KeyboardWindow.Add("Text", "",
+		"Alt text: A QWERTY keyboard with additional symbols on each key to indicate what is sent when that key is pressed while holding the spacebar. The full list of keys is available on the Mirror Keys GitHub page."
+	)
+	Keyboard_map := KeyboardWindow.Add("Pic", Format("x0 y0 w{} h{}", map_width, map_height), "HBITMAP:*" . Create_Image(
+		KeyMap_B64)) ; Ref: matias.store/cdn/shop/products/FK302QPC-HQCloseupofLetterArea.jpg
 
 	; Events ----------------------------------------------
 	KeyboardWindow.OnEvent("Size", KeyboardWindow_Resize)
 	KeyboardWindow.OnEvent("Close", KeyboardWindow_Close)
 
-
 	; Window Launch ---------------------------------------
-	hover_state := StreamRead("MirrorKeys", "KeyboardWindow_hover", True) ;Reads current setting
+	hover_state := StreamRead("MirrorKeys", "KeyboardWindow_hover", True) ; Reads current setting
 	If hover_state = True {
 		KeyboardWindow.Opt("+AlwaysOnTop")
 	}
 
 	KeyboardWindow.Show(Format("NA Autosize x{} y{}", map_x, map_y))
 }
-
 
 ; GUI Events ==============================================
 KeyboardWindow_Resize(GuiObj := "", MinMax := "", Width := "", Height := "") {
@@ -168,7 +542,6 @@ KeyboardWindow_Resize(GuiObj := "", MinMax := "", Width := "", Height := "") {
 	Keyboard_map.Move(, , keyboard_map_width, keyboard_map_height) ; Resizes the picture to fit the window
 	Keyboard_map.Redraw() ; Updates the picture
 }
-
 
 Save_KeyboardWindow_Properties() {
 	Try {
@@ -182,59 +555,136 @@ Save_KeyboardWindow_Properties() {
 	}
 }
 
-
 KeyboardWindow_Close(thisGui) {
 	Save_KeyboardWindow_Properties()
-	TrayTip("Mirror Keys is still running. Right-click the tray icon to fully quit, or to reopen the mirror map.", "Mirror Keys", "4 32 Mute") ;4 uses the script's icon; 32 prevents a notification sound
+	TrayTip("Mirror Keys is still running. Right-click the tray icon to fully quit, or to reopen the mirror map.",
+		"Mirror Keys", "4 32 Mute") ; 4 uses the script's icon; 32 prevents a notification sound
 	KeyboardWindow.Destroy()
 }
 
-
 ; =========================================================
-; 			MENUS
+; 							MENUS
 ; =========================================================
 ; Tray Menu/GUI File Menu =================================
 
 Tray := A_TrayMenu
-Tray.Delete() ;Removes the default menu
+Tray.Delete() ; Removes the default menu
 
-Tray.Add("Reopen mirror &map", Keyboard_Display)
-Tray.Add() ;Line break
+Tray.Add("Open mirror &map", Keyboard_Display)
+Tray.Default := "Open mirror &map"
+Tray.Add() ; Line break
+
+ModeMenu := Menu()
+ModeMenu.Add("Hold Space to &mirror key", change_input_mode)
+ModeMenu.Add("&Tap Space to toggle mirroring", change_input_mode)
+ModeMenu.Add("Tap Space to mirror &next key", change_input_mode)
+ModeMenu.Add("&Double-tap key to mirror", change_input_mode)
+ModeMenu.Add("&Hold key to mirror", change_input_mode)
+ModeMenu.Add() ; Line break
+ModeMenu.Add("Input &settings", settings_launch)
+ModeMenu.Check(mode)
+Tray.Add("&Input Mode", ModeMenu)
+
+Tray.Add() ; Line break
 Tray.Add("View project on &Github", Launch_Github)
 Tray.Add("How to &launch on PC startup...", Startup_Instructions)
-Tray.Add() ;Line break
+Tray.Add() ; Line break
 Tray.Add("&Pause Mirror Keys", Suspend_Script)
 Tray.Add("&Reload", Reload_Script)
 Tray.Add("&Quit", Quit_Script)
 
+change_input_mode(ItemName, ItemPos, ThisMenu) {
+	Global
+	Switch ItemName {
+		Case "Hold Space to &mirror key":
+		{
+			mode := "Hold Space to &mirror key"
+			StreamWrite("MirrorKeys", "mode", "Hold Space to &mirror key")
+		}
+		Case "&Tap Space to toggle mirroring":
+		{
+			mode := "&Tap Space to toggle mirroring"
+			StreamWrite("MirrorKeys", "mode", "&Tap Space to toggle mirroring")
+		}
+		Case "Tap Space to mirror &next key":
+		{
+			mode := "Tap Space to mirror &next key"
+			StreamWrite("MirrorKeys", "mode", "Tap Space to mirror &next key")
+		}
+		Case "&Double-tap key to mirror":
+		{
+			mode := "&Double-tap key to mirror"
+			StreamWrite("MirrorKeys", "mode", "&Double-tap key to mirror")
+		}
+		Case "&Hold key to mirror":
+		{
+			mode := "&Hold key to mirror"
+			StreamWrite("MirrorKeys", "mode", "&Hold key to mirror")
+		}
+	}
+	ModeMenu.Uncheck("Hold Space to &mirror key")
+	ModeMenu.Uncheck("&Tap Space to toggle mirroring")
+	ModeMenu.Uncheck("Tap Space to mirror &next key")
+	ModeMenu.Uncheck("&Double-tap key to mirror")
+	ModeMenu.Uncheck("&Hold key to mirror")
+	ModeMenu.Check(ItemName)
+}
 
-Launch_Github(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
+settings_launch(ItemName, ItemPos, ThisMenu) {
+	Global
+	settings_gui := Gui(, "Preferences - Mirror Keys")
+
+	settings_gui.Add("Text", "", "Double-tap duration (milliseconds)")
+	double_tap_value := settings_gui.Add("Edit", "Section X+M Number", double_tap_timeout)
+
+	settings_gui.Add("Text", "XM", "Hold key duration (milliseconds)")
+	hold_key_value := settings_gui.Add("Edit", "XS YP Number", hold_duration)
+
+	save_button := settings_gui.Add("Button", "XM", "Save")
+	save_button.OnEvent("Click", save_settings)
+	cancel_button := settings_gui.Add("Button", "X+M", "Cancel")
+	cancel_button.OnEvent("Click", destroy_settings)
+
+	settings_gui.Show()
+}
+
+save_settings(*) {
+	Global
+	double_tap_timeout := double_tap_value.Value
+	StreamWrite("MirrorKeys", "double_tap_timeout", double_tap_timeout)
+	hold_duration := hold_key_value.Value
+	StreamWrite("MirrorKeys", "hold_duration", hold_duration)
+	destroy_settings()
+}
+
+destroy_settings(*) {
+	Global
+	settings_gui.Destroy()
+}
+
+
+Launch_Github(ItemName, ItemPos, ThisMenu) {
 	Run "https://github.com/Cordarian/Mirror-Keys"
 }
 
-
-Startup_Instructions(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
+Startup_Instructions(ItemName, ItemPos, ThisMenu) {
 	Run "https://www.autohotkey.com/docs/v2/FAQ.htm#Startup"
 }
 
-
-Suspend_Script(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
-	Tray.ToggleCheck("Pause Mirror Keys")
-	Suspend -1 ;Toggles state
-	Pause -1 ;Toggles state
+Suspend_Script(ItemName, ItemPos, ThisMenu) {
+	Tray.ToggleCheck("&Pause Mirror Keys")
+	Suspend -1 ; Toggles state
+	Pause -1 ; Toggles state
 }
 
-
-Reload_Script(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
+Reload_Script(ItemName, ItemPos, ThisMenu) {
 	Reload()
 }
 
-
-Quit_Script(A_ThisMenuItem := "", A_ThisMenuItemPos := "", A_ThisMenu := "") {
+Quit_Script(ItemName, ItemPos, ThisMenu) {
 	Save_KeyboardWindow_Properties()
 	ExitApp()
 }
-
 
 ; GUI Menubar =============================================
 Build_Menubar() {
@@ -245,11 +695,11 @@ Build_Menubar() {
 	Window_submenu.Add("&Open map window automatically", toggle_map_startup)
 
 	; Adds checkmark to relevant menu items
-	hover_state := StreamRead("MirrorKeys", "KeyboardWindow_hover", True) ;Reads current setting
-	toggle_menu_checkmark(Window_submenu, "&Keep window on top", hover_state) ;Un/checks item
+	hover_state := StreamRead("MirrorKeys", "KeyboardWindow_hover", True) ; Reads current setting
+	toggle_menu_checkmark(Window_submenu, "&Keep window on top", hover_state) ; Un/checks item
 
-	autostart_map_state := StreamRead("MirrorKeys", "autostart_map_state", True) ;Reads current setting
-	toggle_menu_checkmark(Window_submenu, "&Open map window automatically", autostart_map_state) ;Un/checks item
+	autostart_map_state := StreamRead("MirrorKeys", "autostart_map_state", True) ; Reads current setting
+	toggle_menu_checkmark(Window_submenu, "&Open map window automatically", autostart_map_state) ; Un/checks item
 
 	; Builds menubar --------------------------------------
 	Map_menubar := MenuBar()
@@ -257,7 +707,6 @@ Build_Menubar() {
 	Map_menubar.Add("&Window", Window_submenu)
 	KeyboardWindow.MenuBar := Map_menubar
 }
-
 
 toggle_menu_checkmark(this_menu, this_item, do_toggle) {
 	; Checks or unchecks this_item in this_menu, depending on whether do_toggle is True or False
@@ -267,15 +716,13 @@ toggle_menu_checkmark(this_menu, this_item, do_toggle) {
 	Else this_menu.Uncheck(this_item)
 }
 
-
 toggle_hover(this_MenuItem, this_ItemPos, this_Menu) {
 	Global
 	hover_state := !StreamRead("MirrorKeys", "KeyboardWindow_hover", True) ; Reads current setting, but inverted
 	StreamWrite("MirrorKeys", "KeyboardWindow_hover", hover_state) ; Updates setting
-	WinSetAlwaysOnTop -1, "Mirror Map - Mirror Keys" ; -1 toggles True/False on GUI itself
+	WinSetAlwaysOnTop -1, "Mirror Map" ; -1 toggles True/False on GUI itself
 	toggle_menu_checkmark(Window_submenu, "&Keep window on top", hover_state) ; Un/checks menu item
 }
-
 
 toggle_map_startup(this_MenuItem, this_ItemPos, this_Menu) {
 	Global
@@ -284,42 +731,21 @@ toggle_map_startup(this_MenuItem, this_ItemPos, this_Menu) {
 	toggle_menu_checkmark(Window_submenu, "&Open map window automatically", autostart_map_state) ; Un/checks menu item
 }
 
+OnMessage(0x404, MK_NOTIFYICON)
 
-; ==========================================================
-; 		STREAM SAVE SETTINGS
-; ==========================================================
-; This will fail if the file isn't in an NTFS folder, E.G., if it's in Box Drive, which is FAT-32, and create a settings text file using stream_fallback instead
-Global stream_fallback := "MirrorKeys-Settings-" A_Username ".ini"
-
-StreamRead(INI_section, INI_key, defaultTo := False) {
-	; Reads the key's value from the given section of the data stream
-	stream_value := IniRead(A_ScriptFullPath ":Stream:$DATA", INI_section, INI_key, defaultTo)
-	If stream_value = defaultTo {
-		Global stream_fallback
-		stream_value := IniRead(stream_fallback, INI_section, INI_key, defaultTo)
-	}
-	Return stream_value
-}
-
-StreamWrite(INI_section, INI_key, INI_value) {
-	; Writes the value to the key
-	; This will fail if the file isn't in an NTFS folder, E.G., if it's in Box Drive, which is FAT-32
-	Try {
-		IniWrite(INI_value, A_ScriptFullPath ":Stream:$DATA", INI_section, INI_key)
-	}
-	Catch {
-		Global stream_fallback
-		IniWrite(INI_value, stream_fallback, INI_section, INI_key)
+MK_NOTIFYICON(wParam, lParam, msg, hwnd) ; https://www.autohotkey.com/boards/viewtopic.php?t=6110
+{
+	If (lParam = 514) { ; Single click is 514
+		Keyboard_Display()
 	}
 }
 
 
 ; =========================================================
-; 			IMAGE FILES
+; 						IMAGE FILES
 ; =========================================================
 {
 	Create_Image(B64, NewHandle := True) {
-		; Seems to work better with ICO files than PNG
 		; This function adapted from Image2Include v2 by iPhilip https://www.autohotkey.com/boards/viewtopic.php?style=1&t=119966
 		Static hBitmap := 0
 		If (NewHandle)
@@ -354,11 +780,11 @@ StreamWrite(INI_section, INI_key, INI_value) {
 
 
 	; Binary representation of the tray icon image, generated using Image2Include.ahk
-	; Apologies for the scrolling
+	; Apologies for the scrolling; there's nothing interesting after this.
 	MirrorKeys_B64_Icon :=
 		"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CwAMDAwADAwMAA0NDQAPDw8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQkJAAcHBwALCwsADQ0NAAwMDAAMDAwADAwMAAwMDAAODg4AEhISABEREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////8AAP///////wAAAB4AAHgAAAAAHgAAeAAAAAAOAABwAAAAAA4AAHAAAAAABgAAYAAAAAACAABgAAAAAAIAAEAAAAAAAgAAQAAAAAAAAABAAAAAgAAAAAABAACAAAAAAAEAAIAAAAAAAQAAwAAAAAADAADgAAAAAAcAAOAAAAAABwAA8AAAAAAPAADwAAAAAA8AAPAAAAAADwAA+AAAAAAfAAD8AAAAAB8AAPwAAAAAPwAA/gAAAAB/AAD+AAAAAH8AAP4AAAAAfwAA/gAAAAB/AAD+AAAAAH8AAPwAAAAAPwAA/AAAAAAfAAD4AAAAAB8AAPAAAAAADwAA8AAAAAAPAADwAAAAAA8AAOAAAAAABwAAwAAAAAADAADAAAAAAAMAAIAAAAAAAQAAgAIAAEABAACAAgAAQAEAAAACAABAAAAAAAYAAGAAAAAABgAAYAAAAAAOAABwAAAAAB4AAHgAAAAAHgAAeAAAAAAeAAB4AAAA////////AAA="
 
-	TraySetIcon("HBITMAP:*" . Create_Image(MirrorKeys_B64_Icon, True)) ;The "True" creates a new icon over any existing ones set by Includes
+	TraySetIcon("HBITMAP:*" . Create_Image(MirrorKeys_B64_Icon, True)) ; The "True" creates a new icon over any existing ones set by Includes
 
 	; Binary representation of the keyboard map
 	Global KeyMap_B64
@@ -425,9 +851,8 @@ StreamWrite(INI_section, INI_key, INI_value) {
 
 }
 
-
 ; =========================================================
-; 			LAUNCH GUI
+; 						LAUNCH GUI
 ; =========================================================
 
 autostart_map_state := StreamRead("MirrorKeys", "autostart_map_state", True) ; Reads current setting
